@@ -1,0 +1,10 @@
+{
+  "id": "first-match-search",
+  "title": "First match search",
+  "problem": "Return the zero-based index of the first occurrence of target in values. Return -1 only if the target is absent.",
+  "sample_input": {"values": [4, 7, 2], "target": 7},
+  "expected_output": 1,
+  "reference_code": "fun solution(values, target):\n    i = 0\n    while (i < length(values)):\n        if (values[i] == target):\n            return i\n        end if\n        i += 1\n    end while\n    return -1\nend fun",
+  "starter_code": "fun solution(values, target):\n    i = 0\n    while (i < length(values)):\n        if (values[i] == target):\n            return i\n        end if\n        return -1\n        i += 1\n    end while\n    return -1\nend fun",
+  "starter_output": "-1"
+}

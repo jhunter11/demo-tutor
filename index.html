@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tutor · API demo</title>
+  <style>
+    :root { color-scheme: light; --ink:#20302a; --muted:#64736b; --accent:#2c6650; --line:#dce7e0; --paper:#fff; --wash:#f2f7f5; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--wash); color:var(--ink); font:16px/1.6 "Aptos", "Segoe UI", sans-serif; }
+    button,textarea,input { font:inherit; }
+    button { cursor:pointer; }
+    button:disabled { cursor:wait; opacity:.65; }
+    button:focus-visible,textarea:focus-visible,input:focus-visible,summary:focus-visible { outline:3px solid #76a58e; outline-offset:3px; }
+    .app { max-width:850px; margin:auto; min-height:100dvh; display:flex; flex-direction:column; padding:28px 26px 20px; }
+    header { display:flex; justify-content:space-between; align-items:center; gap:20px; padding-bottom:22px; border-bottom:1px solid var(--line); }
+    .brand { font:700 22px/1.2 "Aptos Display", "Trebuchet MS", sans-serif; letter-spacing:-.6px; }
+    .brand span { margin-left:10px; font:400 12px/1.2 Consolas,monospace; color:var(--muted); letter-spacing:0; }
+    .quiet { border:0; padding:7px 10px; color:var(--muted); background:transparent; border-radius:6px; }
+    .quiet:hover { background:#e5eee8; color:var(--ink); }
+    main { flex:1; padding:32px 0 26px; }
+    .welcome { padding:25px 0 28px; max-width:610px; }
+    .exercise h1 { font-size:30px; margin-bottom:10px; }
+    .exercise .intro { max-width:730px; margin-bottom:12px; }
+    .sample { font-size:14px; margin:0 0 20px; }
+    .sample code { background:#e5eee8; padding:3px 6px; border-radius:4px; font:13px Consolas,monospace; }
+    .code-pair { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; align-items:start; }
+    .reference, .student { min-width:0; }
+    summary, .student label { font-size:14px; font-weight:650; }
+    summary { cursor:pointer; padding-bottom:8px; }
+    .reference pre { margin:0; min-height:300px; font-size:12px; }
+    #studentCode { display:block; margin-top:8px; min-height:300px; max-height:480px; border:1px solid #bdcec2; border-radius:8px; padding:12px; background:var(--paper); font:12px/1.65 Consolas,monospace; }
+    .state-row { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin:15px 0 4px; font-size:13px; }
+    #observedOutput { width:120px; border:1px solid #bdcec2; border-radius:5px; padding:5px 8px; background:var(--paper); color:var(--ink); }
+    .state-note, .context-note { font-size:11px; color:var(--muted); margin:4px 0 0; }
+    .welcome h2 { font-size:19px; font-weight:600; margin:0 0 12px; }
+    .eyebrow { color:var(--accent); margin:0 0 14px; font:12px Consolas,monospace; letter-spacing:.05em; }
+    h1 { font:500 clamp(30px,5vw,43px)/1.2 "Aptos Display", "Trebuchet MS", sans-serif; letter-spacing:-1.3px; margin:0 0 18px; }
+    .intro { color:var(--muted); max-width:520px; margin:0 0 28px; }
+    .examples { display:flex; flex-wrap:wrap; gap:9px; }
+    .example { text-align:left; padding:10px 13px; border:1px solid var(--line); border-radius:8px; background:var(--paper); color:var(--ink); font-size:14px; }
+    .example:hover { border-color:#7eaa92; }
+    .message { margin:0 0 27px; }
+    .speaker { display:flex; align-items:center; gap:8px; font-size:12px; font-weight:650; color:var(--muted); margin-bottom:8px; }
+    .speaker::before { content:""; width:7px; height:7px; border-radius:50%; background:#a4b6a9; }
+    .assistant .speaker::before { background:var(--accent); }
+    .user .body { background:#e4eee7; padding:14px 18px; border-radius:10px; }
+    .body { overflow-wrap:anywhere; }
+    .body p { white-space:pre-wrap; margin:0 0 12px; }
+    .body p:last-child { margin-bottom:0; }
+    .body h3 { font-size:18px; margin:18px 0 9px; font-weight:600; }
+    .body ul,.body ol { padding-left:23px; margin:10px 0 16px; }
+    .body code { font:13px Consolas,monospace; background:#e9f1eb; padding:2px 4px; border-radius:3px; }
+    pre { white-space:pre-wrap; overflow-wrap:anywhere; background:#edf3ef; padding:16px; border:1px solid var(--line); border-radius:8px; font:13px/1.65 Consolas,monospace; margin:14px 0; }
+    .usage { color:var(--muted); font-size:11px; margin:9px 0 0; }
+    .composer { position:sticky; bottom:0; padding-top:10px; background:var(--wash); }
+    form { background:var(--paper); border:1px solid #bdcec2; border-radius:12px; padding:15px 16px 12px; box-shadow:0 3px 12px #20302a06; }
+    textarea { resize:vertical; min-height:78px; max-height:240px; width:100%; border:0; outline:none; color:var(--ink); background:transparent; line-height:1.5; }
+    textarea::placeholder { color:#79877e; }
+    .composer-row { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:8px; }
+    .modes { display:flex; gap:3px; }
+    .mode { border:0; border-radius:6px; background:transparent; padding:6px 10px; color:var(--muted); font-size:13px; }
+    .mode[aria-pressed="true"] { background:#e5eee8; color:var(--accent); font-weight:600; }
+    .send { border:0; border-radius:7px; background:var(--accent); color:white; min-width:86px; padding:8px 18px; font-weight:600; font-size:14px; }
+    .send:hover { background:#23503f; }
+    #notice { color:#914d25; margin:0 0 10px; font-size:13px; }
+    #notice:empty { display:none; }
+    .footer { display:flex; justify-content:space-between; flex-wrap:wrap; gap:5px 16px; color:var(--muted); font-size:11px; padding:10px 3px 0; }
+    @media(max-width:740px) { .code-pair { grid-template-columns:minmax(0,1fr); gap:12px; } .reference pre { min-height:0; } }
+    @media(max-width:560px) { .app { padding:18px 17px 15px; } .brand span { display:block; margin:5px 0 0; } .composer-row { gap:5px; } .mode { padding:6px 8px; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">Tutor<span>API demo · draft 01</span></div>
+      <button class="quiet" id="newChat" type="button">New chat</button>
+    </header>
+    <main>
+      <section class="exercise" aria-label="Search exercise">
+        <p class="eyebrow">One practice example</p>
+        <h1 id="exerciseTitle">First match search</h1>
+        <p class="intro" id="problem">Loading the example…</p>
+        <p class="sample">Input: <code id="sampleInput"></code> · Expected output: <code id="expectedOutput"></code></p>
+        <div class="code-pair">
+          <details class="reference" id="referenceDetails">
+            <summary>Reference algorithm</summary>
+            <pre id="referenceCode"></pre>
+          </details>
+          <div class="student">
+            <label for="studentCode">Your code</label>
+            <textarea id="studentCode" aria-label="Your code" maxlength="8000" spellcheck="false" disabled></textarea>
+          </div>
+        </div>
+        <div class="state-row">
+          <label for="observedOutput">Observed output (optional)</label>
+          <input id="observedOutput" maxlength="2000" disabled>
+          <button class="quiet" id="resetExample" type="button" disabled>Reset example</button>
+        </div>
+        <p class="state-note" id="stateNote">This page does not run code.</p>
+      </section>
+      <section class="welcome" id="welcome">
+        <h2>Ask about your code.</h2>
+        <div class="examples">
+          <button class="example" id="loopExample">Why does my loop stop early?</button>
+          <button class="example" id="indexExample">What is an array index?</button>
+        </div>
+      </section>
+      <section id="conversation" aria-label="Conversation" aria-live="polite" aria-relevant="additions"></section>
+    </main>
+    <div class="composer">
+      <p id="notice" role="status"></p>
+      <form id="chatForm">
+        <textarea id="message" aria-label="Your question" maxlength="8000" placeholder="Ask a question or paste your code…" required></textarea>
+        <div class="composer-row">
+          <div class="modes" aria-label="Type of help">
+            <button class="mode" type="button" data-mode="explain" aria-pressed="true">Explain</button>
+            <button class="mode" type="button" data-mode="hint" aria-pressed="false">Give me a hint</button>
+          </div>
+          <button class="send" id="send" type="submit" disabled>Send</button>
+        </div>
+        <p class="context-note">Every question includes the reference, your current code, input, and expected output.</p>
+      </form>
+      <div class="footer"><span id="connection">Checking setup…</span><span>Enter to send · Shift+Enter for a new line</span></div>
+    </div>
+  </div>
+  <script>
+    const token = "__SESSION_TOKEN__";
+    const $ = id => document.getElementById(id);
+    let history = [], mode = "explain", busy = false, example = null;
+    function clearChat() {
+      history=[];$("conversation").replaceChildren();$("welcome").hidden=false;$("notice").textContent="";$("message").value="";
+    }
+    function resetExample() {
+      if(!example||busy)return;
+      $("studentCode").value=example.starter_code;$("observedOutput").value=example.starter_output;
+      $("stateNote").textContent="Starter output is from a manual trace. This page does not run code.";
+      clearChat();
+    }
+    async function loadExample() {
+      try {
+        const response=await fetch("/exercise"),data=await response.json();
+        if(!response.ok)throw new Error(data.error);
+        example=data;$("exerciseTitle").textContent=data.title;$("problem").textContent=data.problem;
+        $("sampleInput").textContent=`values = [${data.sample_input.values.join(", ")}], target = ${data.sample_input.target}`;
+        $("expectedOutput").textContent=String(data.expected_output);$("referenceCode").textContent=data.reference_code;
+        $("referenceDetails").open=window.matchMedia("(min-width:740px)").matches;
+        resetExample();["studentCode","observedOutput","resetExample","send"].forEach(id=>$(id).disabled=false);
+      } catch(error) { $("notice").textContent=error.message||"Could not load the exercise. Refresh the page."; }
+    }
+    function inline(node,text) {
+      for(const part of text.split(/(`[^`]+`|\*\*[^*]+\*\*|\*[^*\n]+\*)/g)) {
+        if(part.startsWith("`")&&part.endsWith("`")){const code=document.createElement("code");code.textContent=part.slice(1,-1);node.append(code);}
+        else if(part.startsWith("**")&&part.endsWith("**")){const strong=document.createElement("strong");strong.textContent=part.slice(2,-2);node.append(strong);}
+        else if(part.startsWith("*")&&part.endsWith("*")){const em=document.createElement("em");em.textContent=part.slice(1,-1);node.append(em);}
+        else node.append(document.createTextNode(part));
+      }
+    }
+    function renderBody(node,text) {
+      let code=null,paragraph=null,list=null;
+      for(const line of text.split("\n")) {
+        if(line.trim().startsWith("```")){paragraph=null;list=null;if(code){code=null;}else{code=document.createElement("pre");node.append(code);}continue;}
+        if(code){code.textContent+=line+"\n";continue;}
+        if(!line.trim()){paragraph=null;list=null;continue;}
+        if(/^#{1,4}\s/.test(line)){const h=document.createElement("h3");inline(h,line.replace(/^#{1,4}\s+/,""));node.append(h);paragraph=null;list=null;continue;}
+        const bullet=line.match(/^\s*(?:[-*]|\d+\.)\s+(.+)/);
+        if(bullet){if(!list){list=document.createElement(/^\s*\d+\./.test(line)?"ol":"ul");node.append(list);}const item=document.createElement("li");inline(item,bullet[1]);list.append(item);paragraph=null;continue;}
+        list=null;if(!paragraph){paragraph=document.createElement("p");node.append(paragraph);}else paragraph.append(document.createTextNode("\n"));inline(paragraph,line);
+      }
+    }
+    function addMessage(role, text, response) {
+      $("welcome").hidden=true;
+      const article=document.createElement("article");article.className=`message ${role}`;
+      const label=document.createElement("div");label.className="speaker";label.textContent=role==="user"?"You":"Tutor";
+      const body=document.createElement("div");body.className="body";renderBody(body,text);article.append(label,body);
+      if(response) {
+        const usage=document.createElement("p");usage.className="usage";
+        const count=n=>Number.isInteger(n)?n.toLocaleString():"not reported";
+        usage.textContent=`${count(response.input_tokens)} input tokens · ${count(response.output_tokens)} output tokens`;
+        if(Number.isInteger(response.reasoning_tokens)) usage.textContent+=` · ${count(response.reasoning_tokens)} reasoning tokens included`;
+        article.append(usage);
+      }
+      $("conversation").append(article);article.scrollIntoView({block:"end"});return article;
+    }
+    async function checkSetup() {
+      try {
+        const response=await fetch("/health"),data=await response.json();
+        if(!response.ok) throw new Error(data.error);
+        $("connection").textContent=data.key_loaded?`${data.provider} · reasoning ${data.reasoning_effort} · draft skills` : "Add your key to api-key.txt, then save the file.";
+        if(!data.key_loaded) setTimeout(checkSetup,5000);
+      } catch(error) { $("connection").textContent=error.message || "Start the local server to connect."; }
+    }
+    document.querySelectorAll(".mode").forEach(button=>button.addEventListener("click",()=>{
+      mode=button.dataset.mode;document.querySelectorAll(".mode").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
+    }));
+    $("loopExample").addEventListener("click",()=>{
+      $("message").value="Why does my code return -1 when 7 is in the array?";$("message").focus();
+    });
+    $("indexExample").addEventListener("click",()=>{ $("message").value="In the array [4, 7, 2], what is the difference between the value 7 and its index?";$("message").focus(); });
+    $("newChat").addEventListener("click",()=>{ if(busy)return;clearChat();$("message").focus(); });
+    $("resetExample").addEventListener("click",resetExample);
+    $("studentCode").addEventListener("input",()=>{ $("observedOutput").value="";$("stateNote").textContent="Code changed. Add the output you saw, if available. This page does not run code."; });
+    $("message").addEventListener("keydown",event=>{ if(event.key==="Enter"&&!event.shiftKey&&!event.isComposing){event.preventDefault();$("chatForm").requestSubmit();} });
+    $("chatForm").addEventListener("submit",async event=>{
+      event.preventDefault();if(busy||!example)return;const message=$("message").value.trim();if(!message)return;
+      const context={exercise_id:example.id,student_code:$("studentCode").value,observed_output:$("observedOutput").value};
+      if(!context.student_code.trim()){ $("notice").textContent="Add your code before asking the tutor.";return; }
+      busy=true;$("send").disabled=true;$("newChat").disabled=true;$("send").textContent="Thinking…";$("notice").textContent="";
+      ["studentCode","observedOutput","resetExample","loopExample","indexExample"].forEach(id=>$(id).disabled=true);
+      const userNode=addMessage("user",message);$("message").value="";
+      try {
+        const response=await fetch("/chat",{method:"POST",headers:{"Content-Type":"application/json","X-Demo-Token":token},body:JSON.stringify({message,history:history.slice(-12),mode,context})});
+        const data=await response.json();if(!response.ok)throw new Error(data.error || "The tutor could not answer.");
+        addMessage("assistant",data.answer,data);history.push({role:"user",content:message},{role:"assistant",content:data.answer});
+        if(data.warning)$("notice").textContent=data.warning;
+      } catch(error) {userNode.remove();if(!history.length)$("welcome").hidden=false;$("message").value=message;$("notice").textContent=error.message;}
+      finally {busy=false;$("send").disabled=false;$("newChat").disabled=false;$("send").textContent="Send";["studentCode","observedOutput","resetExample","loopExample","indexExample"].forEach(id=>$(id).disabled=false);$("message").focus();}
+    });
+    checkSetup();loadExample();
+  </script>
+</body>
+</html>
