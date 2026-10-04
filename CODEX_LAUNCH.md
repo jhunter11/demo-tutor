@@ -1,11 +1,11 @@
-# Launch the tutor demo with Codex
+# Launch demo-tutor with Codex
 
 Give this document to a local Codex task on the computer where you want to use the demo.
 Codex can get the app from these links. No second attachment is needed.
 
-- Repository: [jhunter11/api-tutor-mvp](https://github.com/jhunter11/api-tutor-mvp)
-- Demo ZIP: [v0.1.0 download](https://github.com/jhunter11/api-tutor-mvp/releases/download/v0.1.0/api-tutor-mvp.zip)
-- Setup guide: [START_HERE.md](https://github.com/jhunter11/api-tutor-mvp/blob/main/START_HERE.md)
+- Repository: [jhunter11/demo-tutor](https://github.com/jhunter11/demo-tutor)
+- Demo ZIP: [v0.1.0 download](https://github.com/jhunter11/demo-tutor/releases/download/v0.1.0/demo-tutor.zip)
+- Setup guide: [START_HERE.md](https://github.com/jhunter11/demo-tutor/blob/main/START_HERE.md)
 
 Requirements: Python 3.10 or newer, an internet connection, and an OpenRouter API key.
 Paste the key locally when Codex asks. This document contains no key.
@@ -37,8 +37,8 @@ python app.py --open
 To get a fresh copy with Git, run these commands in a suitable parent folder first:
 
 ```sh
-git clone https://github.com/jhunter11/api-tutor-mvp.git
-cd api-tutor-mvp
+git clone https://github.com/jhunter11/demo-tutor.git
+cd demo-tutor
 ```
 
 If Git is unavailable, use the linked ZIP. Find its folder containing `app.py`, `exercise.json`, and `settings.json`.

@@ -75,7 +75,7 @@ Full AVP execution, retrieval, and visualizer integration belong to later milest
 
 ## Share
 
-Send the prepared `api-tutor-mvp.zip`, or create a fresh bundle with:
+Send the prepared `demo-tutor.zip`, or create a fresh bundle with:
 
 ```sh
 python package_demo.py

@@ -1,4 +1,4 @@
-# Tutor API MVP
+# Demo Tutor
 
 A small first milestone: one chatbot page, a hosted model API, and two draft teaching skills.
 Read [START_HERE.md](START_HERE.md) to set one key file and launch the page.

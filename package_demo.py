@@ -29,13 +29,13 @@ def package(destination=None):
     output = (
         Path(destination)
         if destination
-        else ROOT.parent / "deliverables" / "api-tutor-mvp.zip"
+        else ROOT.parent / "deliverables" / "demo-tutor.zip"
     )
     output.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         for name in FILES:
-            archive.write(ROOT / name, "api-tutor-mvp/" + name)
-        archive.writestr("api-tutor-mvp/api-key.txt", PLACEHOLDER)
+            archive.write(ROOT / name, "demo-tutor/" + name)
+        archive.writestr("demo-tutor/api-key.txt", PLACEHOLDER)
     print(str(output))
     return output
 
