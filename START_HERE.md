@@ -6,6 +6,15 @@ No package installation, Node, local model, or GPU is required.
 
 ## Set the key
 
+Run this check from the demo folder first:
+
+```sh
+python app.py --check
+```
+
+Use `python3` on macOS or Linux. The check creates `api-key.txt` with a placeholder if the file is missing.
+It makes no model call.
+
 Open `api-key.txt` in this folder.
 Replace the placeholder with your OpenRouter API key, then save the file.
 Paste only the key. Do not add quotes or a variable name.
